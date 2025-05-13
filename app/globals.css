@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.9%;
+  }
+
+  .dark {
+    --background: 0 0% 3.9%;
+    --foreground: 0 0% 98%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* 自定义宜家风格的样式 */
+.ikea-box {
+  @apply border border-black p-4;
+}
+
+.ikea-step {
+  @apply flex items-center gap-2;
+}
+
+.ikea-circle {
+  @apply w-16 h-16 border-2 border-black rounded-full flex items-center justify-center;
+}
+
+.ikea-quantity {
+  @apply text-xs font-mono mt-1;
+}
