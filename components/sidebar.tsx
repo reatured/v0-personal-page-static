@@ -7,7 +7,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Layers, Gamepad2, Headphones, Code, Menu, X } from "lucide-react"
-import { categories } from "@/lib/projects"
+import { categories } from "@/lib/mdx"
 import { CuboidIcon } from "./icons"
 
 export function Sidebar() {

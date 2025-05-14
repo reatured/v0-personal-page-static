@@ -1,9 +1,10 @@
 ---
-title: Teddy Bear
-description: A detailed 3D model of a teddy bear featuring realistic hair simulation using Blender's particle system.
-imageUrl: https://images.squarespace-cdn.com/content/5df7337598a1771a4a73ef26/1590806202203-0KVBKWYEMEAY48QHPSGH/Bear+Image+7.png?content-type=image%2Fpng
-imageRatio: square
-software: Blender
+title: "Teddy Bear"
+description: "A detailed 3D model of a teddy bear featuring realistic hair simulation using Blender's particle system."
+date: "2020-02-25"
+categories: ["3D Design"]
+tags: ["Blender", "Hair Simulation", "3D Modeling"]
+image: "https://jmxcp80fkrvvffbg.public.blob.vercel-storage.com/TeddyBear/BearImage54.png"
 ---
 
 # Teddy Bear
@@ -30,21 +31,17 @@ Getting the fur to look realistic was challenging. I had to carefully adjust the
     <img 
       src="https://jmxcp80fkrvvffbg.public.blob.vercel-storage.com/TeddyBear/BearImage54.png" 
       alt="Bear"
-      class=""  
     />
     <img 
       src="https://jmxcp80fkrvvffbg.public.blob.vercel-storage.com/TeddyBear/BearImage77.png" 
       alt="Bear"
-      class=""  
     />
     <img 
       src="https://jmxcp80fkrvvffbg.public.blob.vercel-storage.com/TeddyBear/BearImage67.png" 
       alt="Bear"
-      class=""  
     />
     <img 
       src="https://jmxcp80fkrvvffbg.public.blob.vercel-storage.com/TeddyBear/BearImage84.png" 
       alt="Bear"
-      class=""  
     />
-    </div>
+</div>

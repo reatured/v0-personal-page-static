@@ -1,0 +1,126 @@
+/* 项目页面的自定义样式 */
+
+.image-grid-1column {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.image-grid-2column {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.image-grid-3column {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.image-grid-4column {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+/* Add new 2x2 grid layout */
+.image-grid-2x2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+@media (min-width: 768px) {
+  .image-grid-2column {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .image-grid-3column {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .image-grid-4column {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (min-width: 1024px) {
+  .image-grid-4column {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
+.image-grid-1column img,
+.image-grid-2column img,
+.image-grid-3column img,
+.image-grid-4column img,
+.image-grid-2x2 img,
+.image-grid-1column video,
+.image-grid-2column video,
+.image-grid-3column video,
+.image-grid-4column video,
+.image-grid-2x2 video,
+.image-grid-1column iframe,
+.image-grid-2column iframe,
+.image-grid-3column iframe,
+.image-grid-4column iframe,
+.image-grid-2x2 iframe {
+  width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  border: 1px solid #000;
+}
+
+/* Add support for markdown content images */
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 0.5rem;
+  border: 1px solid #000;
+}
+
+.markdown-content iframe,
+.markdown-content video {
+  max-width: 100%;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 0.5rem;
+  border: 1px solid #000;
+}
+
+/* Fix for nested divs in image grids */
+.image-grid-1column > div,
+.image-grid-2column > div,
+.image-grid-3column > div,
+.image-grid-4column > div,
+.image-grid-2x2 > div {
+  width: 100%;
+  height: auto;
+}
+
+/* Ensure proper spacing in grid layouts */
+.image-grid-1column > *,
+.image-grid-2column > *,
+.image-grid-3column > *,
+.image-grid-4column > *,
+.image-grid-2x2 > * {
+  margin: 0;
+}
+
+/* Add proper padding to grid items */
+.image-grid-1column,
+.image-grid-2column,
+.image-grid-3column,
+.image-grid-4column,
+.image-grid-2x2 {
+  padding: 0.5rem;
+}

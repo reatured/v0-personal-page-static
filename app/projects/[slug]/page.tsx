@@ -1,13 +1,15 @@
+import type React from "react"
 /**
  * 项目详情页面
  */
-import { getProjectBySlug, getAllProjects } from "@/lib/projects"
+import { getProjectBySlug, getAllProjects } from "@/lib/mdx"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { notFound } from "next/navigation"
 import { Separator } from "@/components/ui/separator"
+import "@/app/projects.css"
 
 interface ProjectPageProps {
   params: {
@@ -36,6 +38,40 @@ export async function generateStaticParams() {
   return projects.map((project) => ({
     slug: project.slug,
   }))
+}
+
+// 将Markdown转换为格式化的HTML文本
+// Convert Markdown to formatted HTML text
+function formatMarkdown(markdown: string): React.ReactNode {
+  if (!markdown) return null
+
+  // 处理标题 (Handle headings)
+  let formatted = markdown.replace(/^# (.*$)/gm, '<h1 class="text-3xl font-bold my-4">$1</h1>')
+  formatted = formatted.replace(/^## (.*$)/gm, '<h2 class="text-2xl font-bold my-3">$1</h2>')
+  formatted = formatted.replace(/^### (.*$)/gm, '<h3 class="text-xl font-bold my-2">$1</h3>')
+
+  // 处理列表 (Handle lists)
+  formatted = formatted.replace(/^\s*[-*+]\s(.*$)/gm, '<li class="ml-4">$1</li>')
+  formatted = formatted.replace(/(<li.*\n<li)/gm, "$1")
+  formatted = formatted.replace(/(<li.*(?:\n|$))+/gm, '<ul class="list-disc my-4 pl-5">$&</ul>')
+
+  // 处理粗体和斜体 (Handle bold and italic)
+  formatted = formatted.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+  formatted = formatted.replace(/\*(.*?)\*/g, "<em>$1</em>")
+
+  // 处理链接 (Handle links)
+  formatted = formatted.replace(/\[(.*?)\]$$(.*?)$$/g, '<a href="$2" class="text-blue-600 hover:underline">$1</a>')
+
+  // 处理段落 (Handle paragraphs)
+  formatted = formatted.replace(/^(?!<[hua]).+/gm, '<p class="my-2">$&</p>')
+
+  // 保留图片和HTML标签 (Preserve images and HTML tags)
+  formatted = formatted.replace(/<div class="image-grid[^>]*>([\s\S]*?)<\/div>/g, (match) => match)
+
+  // 处理换行 (Handle line breaks)
+  formatted = formatted.replace(/\n\n/g, "<br/>")
+
+  return <div dangerouslySetInnerHTML={{ __html: formatted }} />
 }
 
 export default function ProjectPage({ params }: ProjectPageProps) {
@@ -106,6 +142,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
               width={600}
               height={400}
               className="w-full h-auto"
+              unoptimized={project.image?.startsWith("http")}
             />
           </div>
         </div>
@@ -113,7 +150,7 @@ export default function ProjectPage({ params }: ProjectPageProps) {
         <Separator className="border-black mb-8" />
 
         <div className="prose prose-sm max-w-none font-mono">
-          <div dangerouslySetInnerHTML={{ __html: project.content.replace(/\n/g, "<br />") }} />
+          <div className="markdown-content">{formatMarkdown(project.content)}</div>
         </div>
       </div>
     </main>

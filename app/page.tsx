@@ -9,7 +9,7 @@ import { ExperienceSection } from "@/components/experience-section"
 import { ContactSection } from "@/components/contact-section"
 import { CategorySection } from "@/components/category-section"
 import { Separator } from "@/components/ui/separator"
-import { getAllProjects, categories } from "@/lib/projects"
+import { getAllProjects, categories } from "@/lib/mdx"
 import { ArrowRight } from "lucide-react"
 import { HeroSection } from "@/components/hero-section"
 

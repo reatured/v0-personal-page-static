@@ -1,7 +1,7 @@
 /**
  * 项目列表页面
  */
-import { getAllProjects, categories, getAllTags } from "@/lib/projects"
+import { getAllProjects, categories, getAllTags } from "@/lib/mdx"
 import type { Metadata } from "next"
 import { ProjectsGrid } from "@/components/projects-grid"
 import { Separator } from "@/components/ui/separator"
