@@ -1,3 +1,8 @@
+// 在文件顶部添加以下注释，确保这个文件只在服务器端运行
+// Add this comment at the top of the file to ensure it only runs on the server
+/* eslint-disable */
+"use server"
+
 /**
  * Markdown 文件处理函数
  * 用于读取和解析项目的 Markdown 文件
