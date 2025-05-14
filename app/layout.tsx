@@ -2,12 +2,14 @@ import type React from "react"
 import "@/app/globals.css"
 import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
+import { PortfolioSidebar } from "@/components/portfolio-sidebar"
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "个人作品集 | 张三",
-  description: "张三的个人作品集网站，展示前端开发项目和技能",
+  title: "Portfolio | John Doe",
+  description: "John Doe's personal portfolio website showcasing frontend development projects and skills",
     generator: 'v0.dev'
 }
 
@@ -17,10 +19,19 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="zh-CN" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
+          <SidebarProvider
+            style={
+              {
+                "--sidebar-width": "18rem",
+              } as React.CSSProperties
+            }
+          >
+            <PortfolioSidebar />
+            <SidebarInset className="bg-background">{children}</SidebarInset>
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>

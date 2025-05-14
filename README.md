@@ -1,30 +1,53 @@
-# Modern landing page
+# Portfolio Website
 
-*Automatically synced with your [v0.dev](https://v0.dev) deployments*
+This is a portfolio website built with Next.js, featuring dynamic category routes and markdown-based project content.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/reatureds-projects/v0-modern-landing-page)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.dev-black?style=for-the-badge)](https://v0.dev/chat/projects/Riy34mgFaMu)
+## Adding New Projects
 
-## Overview
+To add a new project, create a markdown file in the `projects` directory with the following frontmatter structure:
 
-This repository will stay in sync with your deployed chats on [v0.dev](https://v0.dev).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.dev](https://v0.dev).
+\`\`\`markdown
+---
+title: Project Title
+description: A brief description of the project
+date: YYYY-MM-DD
+image: /path/to/image.jpg
+categories: [category1, category2]
+tags: [tag1, tag2, tag3]
+githubUrl: https://github.com/username/repo (optional)
+liveUrl: https://demo-url.com (optional)
+---
 
-## Deployment
+# Project Content
 
-Your project is live at:
+Write your project details here using Markdown.
+\`\`\`
 
-**[https://vercel.com/reatureds-projects/v0-modern-landing-page](https://vercel.com/reatureds-projects/v0-modern-landing-page)**
+### Frontmatter Fields
 
-## Build your app
+- **title**: The title of your project
+- **description**: A brief description (1-2 sentences)
+- **date**: The completion date in YYYY-MM-DD format
+- **image**: Path to the project's featured image
+- **categories**: An array of categories the project belongs to
+- **tags**: An array of technologies or skills used
+- **githubUrl** (optional): Link to the GitHub repository
+- **liveUrl** (optional): Link to the live demo
 
-Continue building your app on:
+### Available Categories
 
-**[https://v0.dev/chat/projects/Riy34mgFaMu](https://v0.dev/chat/projects/Riy34mgFaMu)**
+- `3d-design`: 3D Design projects
+- `graphic-design`: Graphic Design work
+- `creative-coding`: Creative coding experiments
+- `game-dev`: Game development projects
+- `xr-dev`: VR/AR/XR development
+- `full-stack`: Full stack web applications
 
-## How It Works
+## Development
 
-1. Create and modify your project using [v0.dev](https://v0.dev)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+\`\`\`bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
