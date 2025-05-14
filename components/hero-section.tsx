@@ -27,6 +27,11 @@ export function HeroSection() {
   const pointCtRef = useRef(0)
   const sliderRef = useRef(null)
 
+  const containerRef = useRef(null)
+  const scaleFactorRef = useRef(1)
+  const canvasWidthRef = useRef(400)
+  const canvasHeightRef = useRef(400)
+
   // Constants
   const facePt = 5
   const eyePt = 5
@@ -48,7 +53,15 @@ export function HeroSection() {
     sliderRef.current = { value: defaultThickness } // Simplified slider
     p5.noFill()
     p5.angleMode(p5.DEGREES)
-    p5.createCanvas(400, 400).parent(canvasParentRef)
+
+    // Get container width
+    if (containerRef.current) {
+      canvasWidthRef.current = containerRef.current.clientWidth - 48 // Subtract padding (24px on each side)
+      canvasHeightRef.current = canvasWidthRef.current // Keep aspect ratio 1:1
+      scaleFactorRef.current = canvasWidthRef.current / 400 // Calculate scale factor based on original 400px width
+    }
+
+    const canvas = p5.createCanvas(canvasWidthRef.current, canvasHeightRef.current).parent(canvasParentRef)
 
     updatePoints(p5)
 
@@ -60,6 +73,7 @@ export function HeroSection() {
 
   const draw = (p5) => {
     pointCtRef.current = 0
+    const s = scaleFactorRef.current
 
     p5.background(255)
 
@@ -72,7 +86,7 @@ export function HeroSection() {
 
     leftLookAt(p5)
     rightLookAt(p5)
-    pgRef.current = p5.createGraphics(400, 400)
+    pgRef.current = p5.createGraphics(canvasWidthRef.current, canvasHeightRef.current)
     pgRef.current.rotate(-0.1)
     pgRef.current.fill(145, 110, 17)
     pgRef.current.noStroke()
@@ -90,7 +104,7 @@ export function HeroSection() {
     }
     pgRef.current.endShape()
 
-    if (dropShadow) p5.image(pgRef.current, -10, 180, 400, 200)
+    if (dropShadow) p5.image(pgRef.current, -10 * s, 180 * s, canvasWidthRef.current, canvasHeightRef.current / 2)
     p5.push()
     p5.fill(240, 237, 211) // Face Color Here
     p5.noStroke()
@@ -110,9 +124,9 @@ export function HeroSection() {
 
     drawShadow(p5)
     p5.pop()
-    p5.circle(handlesRef.current[5].x1, handlesRef.current[5].y1, leftGoggleRef.current)
+    p5.circle(handlesRef.current[5].x1, handlesRef.current[5].y1, leftGoggleRef.current * s)
     p5.fill(rightCRef.current)
-    p5.circle(handlesRef.current[10].x1, handlesRef.current[10].y1, rightGoggleRef.current)
+    p5.circle(handlesRef.current[10].x1, handlesRef.current[10].y1, rightGoggleRef.current * s)
 
     for (let i = 0; i < handlesRef.current.length - 1; i++) {
       drawBezier(p5, handlesRef.current[i].returnHead(), handlesRef.current[i + 1].returnTail())
@@ -122,17 +136,28 @@ export function HeroSection() {
   }
 
   const mousePressed = (p5) => {
-    if (p5.mouseX < 400 && p5.mouseY < 400) {
+    if (p5.mouseX < canvasWidthRef.current && p5.mouseY < canvasHeightRef.current) {
       reFresh(p5)
+    }
+  }
+
+  const windowResized = (p5) => {
+    if (containerRef.current) {
+      canvasWidthRef.current = containerRef.current.clientWidth - 48 // Subtract padding
+      canvasHeightRef.current = canvasWidthRef.current // Keep aspect ratio 1:1
+      scaleFactorRef.current = canvasWidthRef.current / 400 // Recalculate scale factor
+      p5.resizeCanvas(canvasWidthRef.current, canvasHeightRef.current)
+      p5.redraw()
     }
   }
 
   // Helper functions
   const updatePoints = (p5) => {
+    const s = scaleFactorRef.current
     hairCRef.current = p5.color(p5.random(180, 220), p5.random(180, 220), p5.random(180, 220))
     p5.strokeWeight(0)
-    leftGoggleRef.current = p5.random(50, 80)
-    rightGoggleRef.current = p5.random(50, 80)
+    leftGoggleRef.current = p5.random(50, 80) * s
+    rightGoggleRef.current = p5.random(50, 80) * s
 
     handlesRef.current = []
     iniFaceOutlineHd(p5)
@@ -142,10 +167,10 @@ export function HeroSection() {
     iniMouth(p5)
     const handle4 = new Handle(
       p5,
-      handlesRef.current[0].x1 + p5.random(15),
-      handlesRef.current[0].y1 - p5.random(15),
+      handlesRef.current[0].x1 + p5.random(15) * s,
+      handlesRef.current[0].y1 - p5.random(15) * s,
       handlesRef.current[4].zeroAngle,
-      handlesRef.current[4].distance,
+      handlesRef.current[4].distance * s,
     )
     handlesRef.current[4] = handle4
   }
@@ -157,10 +182,11 @@ export function HeroSection() {
   }
 
   const iniHandle1 = (p5, i) => {
-    const x1 = p5.random(checkTableInt(p5, i, 1), checkTableInt(p5, i, 2))
-    const y1 = p5.random(checkTableInt(p5, i, 3), checkTableInt(p5, i, 4))
+    const s = scaleFactorRef.current
+    const x1 = p5.random(checkTableInt(p5, i, 1), checkTableInt(p5, i, 2)) * s
+    const y1 = p5.random(checkTableInt(p5, i, 3), checkTableInt(p5, i, 4)) * s
 
-    const handle1 = new Handle(p5, x1, y1, checkTableInt(p5, i, 0), 50)
+    const handle1 = new Handle(p5, x1, y1, checkTableInt(p5, i, 0), 50 * s)
     handlesRef.current.push(handle1)
   }
 
@@ -504,6 +530,7 @@ export function HeroSection() {
   // Handle class
   class Handle {
     constructor(p5, x1, y1, angle, distance) {
+      const s = scaleFactorRef.current
       this.x1 = x1
       this.y1 = y1
       this.zeroAngle = angle
@@ -533,13 +560,14 @@ export function HeroSection() {
 
   return (
     <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div className="border border-black p-6">
+      <div className="border border-black p-6" ref={containerRef}>
         {typeof window !== "undefined" && (
           <P5
             preload={preload}
             setup={setup}
             draw={draw}
             mousePressed={mousePressed}
+            windowResized={windowResized}
             style={{ width: "100%", height: "auto" }}
           />
         )}
