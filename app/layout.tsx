@@ -1,18 +1,14 @@
 import type React from "react"
-/**
- * 网站布局组件
- * 定义了网站的整体布局结构和全局样式
- */
-import type { Metadata } from "next"
+import "@/app/globals.css"
 import { Inter } from "next/font/google"
-import "./globals.css"
+import { ThemeProvider } from "@/components/theme-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
-export const metadata: Metadata = {
-  title: "IKEA-Style Portfolio",
-  description: "A personal portfolio website designed like an IKEA instruction manual",
-  generator: "v0.dev",
+export const metadata = {
+  title: "个人作品集 | 张三",
+  description: "张三的个人作品集网站，展示前端开发项目和技能",
+    generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -21,8 +17,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="zh-CN" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   )
 }
