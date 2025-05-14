@@ -1,136 +1,128 @@
-// 在文件顶部添加以下注释，确保这个文件只在服务器端运行
-// Add this comment at the top of the file to ensure it only runs on the server
-/* eslint-disable */
-"use server"
-
 /**
- * Markdown 文件处理函数
- * 用于读取和解析项目的 Markdown 文件
+ * MDX Utilities
+ * Functions for loading and processing MDX/Markdown content
  */
 import fs from "fs"
 import path from "path"
 import matter from "gray-matter"
-import type { Project, Category, Tag } from "./types"
+import { remark } from "remark"
+import html from "remark-html"
+import type { Project } from "./projects"
 
-// 预定义类别
-export const categories: Category[] = [
-  {
-    name: "3D Design",
-    slug: "3d-design",
-    description: "3D modeling, rendering, and animation projects",
-    icon: "cube",
-  },
-  {
-    name: "2D Design",
-    slug: "2d-design",
-    description: "Graphic design, illustration, and UI/UX projects",
-    icon: "layers",
-  },
-  {
-    name: "Game Dev",
-    slug: "game-dev",
-    description: "Game development projects including design and programming",
-    icon: "gamepad-2",
-  },
-  {
-    name: "XR Dev",
-    slug: "xr-dev",
-    description: "Virtual and augmented reality development projects",
-    icon: "headphones",
-  },
-  {
-    name: "Creative Coding",
-    slug: "creative-coding",
-    description: "Generative art and creative coding experiments",
-    icon: "code",
-  },
-]
+// Directory where project markdown files are stored
+const projectsDirectory = path.join(process.cwd(), "content/projects")
 
-// 项目文件目录
-const PROJECTS_DIR = path.join(process.cwd(), "content/projects")
-
-// 获取所有项目文件
-export function getProjectFiles(): string[] {
-  return fs.readdirSync(PROJECTS_DIR).filter((file) => file.endsWith(".md"))
-}
-
-// 解析单个项目文件
-export function parseProjectFile(fileName: string): Project {
-  const slug = fileName.replace(/\.md$/, "")
-  const filePath = path.join(PROJECTS_DIR, fileName)
-  const fileContent = fs.readFileSync(filePath, "utf8")
-  const { data, content } = matter(fileContent)
-
-  return {
-    slug,
-    title: data.title,
-    description: data.description,
-    date: data.date,
-    categories: data.categories || [],
-    tags: data.tags || [],
-    image: data.image || `/placeholder.svg?key=${slug}`,
-    content,
-    featured: data.featured || false,
+/**
+ * Get all project slugs from markdown files
+ */
+export async function getAllProjectSlugs() {
+  try {
+    const fileNames = fs.readdirSync(projectsDirectory)
+    return fileNames.map((fileName) => {
+      return {
+        params: {
+          slug: fileName.replace(/\.md$/, ""),
+        },
+      }
+    })
+  } catch (error) {
+    console.error("Error reading project directory:", error)
+    return []
   }
 }
 
-// 获取所有项目
-export function getAllProjects(): Project[] {
-  const files = getProjectFiles()
-  const projects = files.map((file) => parseProjectFile(file))
-
-  return projects.sort((a, b) => {
-    if (a.date < b.date) {
-      return 1
-    } else {
-      return -1
-    }
-  })
-}
-
-// 获取项目详情
-export function getProjectBySlug(slug: string): Project | null {
+/**
+ * Get project data from markdown file
+ */
+export async function getProjectData(slug: string): Promise<Project | null> {
   try {
-    const fileName = `${slug}.md`
-    return parseProjectFile(fileName)
+    const fullPath = path.join(projectsDirectory, `${slug}.md`)
+    const fileContents = fs.readFileSync(fullPath, "utf8")
+
+    // Use gray-matter to parse the project metadata section
+    const matterResult = matter(fileContents)
+
+    // Use remark to convert markdown into HTML string
+    const processedContent = await remark().use(html).process(matterResult.content)
+
+    const contentHtml = processedContent.toString()
+
+    // Combine the data with the slug and HTML content
+    return {
+      id: slug,
+      slug,
+      title: matterResult.data.title,
+      subtitle: matterResult.data.subtitle,
+      description: matterResult.data.description,
+      fullDescription: matterResult.data.fullDescription || contentHtml,
+      process: matterResult.data.process || "",
+      challenges: matterResult.data.challenges || "",
+      solutions: matterResult.data.solutions || "",
+      category: matterResult.data.category,
+      tags: matterResult.data.tags || [],
+      thumbnail: matterResult.data.thumbnail,
+      images: matterResult.data.images || [],
+      modelUrl: matterResult.data.modelUrl || "",
+      featured: matterResult.data.featured || false,
+      client: matterResult.data.client || "",
+      date: matterResult.data.date || "",
+      software: matterResult.data.software || [],
+      polygons: matterResult.data.polygons || "",
+      formats: matterResult.data.formats || [],
+      relatedProjects: matterResult.data.relatedProjects || [],
+      contentHtml,
+    }
   } catch (error) {
+    console.error(`Error reading project file for slug ${slug}:`, error)
     return null
   }
 }
 
-// 获取所有标签
-export function getAllTags(): Tag[] {
-  const projects = getAllProjects()
+/**
+ * Get all projects from markdown files
+ */
+export async function getAllProjectsFromMdx(): Promise<Project[]> {
+  try {
+    const fileNames = fs.readdirSync(projectsDirectory)
+    const allProjectsData = await Promise.all(
+      fileNames.map(async (fileName) => {
+        const slug = fileName.replace(/\.md$/, "")
+        const projectData = await getProjectData(slug)
+        return projectData
+      }),
+    )
+
+    // Filter out any null values and sort by date
+    return allProjectsData
+      .filter((project): project is Project => project !== null)
+      .sort((a, b) => {
+        if (a.featured && !b.featured) return -1
+        if (!a.featured && b.featured) return 1
+        return new Date(b.date).getTime() - new Date(a.date).getTime()
+      })
+  } catch (error) {
+    console.error("Error getting all projects:", error)
+    return []
+  }
+}
+
+/**
+ * Get all categories from markdown files
+ */
+export async function getAllCategoriesFromMdx(): Promise<string[]> {
+  const projects = await getAllProjectsFromMdx()
+  const categories = new Set(projects.map((project) => project.category))
+  return Array.from(categories)
+}
+
+/**
+ * Get all tags from markdown files
+ */
+export async function getAllTagsFromMdx(): Promise<string[]> {
+  const projects = await getAllProjectsFromMdx()
   const tagsSet = new Set<string>()
-
   projects.forEach((project) => {
-    project.tags.forEach((tag) => {
-      tagsSet.add(tag)
-    })
+    project.tags.forEach((tag) => tagsSet.add(tag))
   })
-
-  return Array.from(tagsSet).map((tag) => ({
-    name: tag,
-    slug: tag.toLowerCase().replace(/\s+/g, "-"),
-  }))
-}
-
-// 按类别获取项目
-export function getProjectsByCategory(categorySlug: string): Project[] {
-  const projects = getAllProjects()
-  const category = categories.find((cat) => cat.slug === categorySlug)
-
-  if (!category) return []
-
-  return projects.filter((project) => project.categories.includes(category.name))
-}
-
-// 按标签获取项目
-export function getProjectsByTag(tagSlug: string): Project[] {
-  const projects = getAllProjects()
-  const tag = getAllTags().find((t) => t.slug === tagSlug)
-
-  if (!tag) return []
-
-  return projects.filter((project) => project.tags.includes(tag.name))
+  return Array.from(tagsSet)
 }

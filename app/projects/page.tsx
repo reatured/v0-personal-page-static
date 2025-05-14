@@ -1,42 +1,69 @@
 /**
- * 项目列表页面
+ * Projects Page Component
+ * Lists all projects with filtering options
  */
-import { getAllProjects, categories, getAllTags } from "@/lib/mdx"
-import type { Metadata } from "next"
-import { ProjectsGrid } from "@/components/projects-grid"
-import { Separator } from "@/components/ui/separator"
+import { ProjectGrid } from "@/components/project-grid"
+import { ProjectFilters } from "@/components/project-filters"
+import { getAllProjects, getAllCategories, getAllTags } from "@/lib/projects"
 
-export const metadata: Metadata = {
-  title: "Projects | IKEA-Style Portfolio",
-  description: "Browse all projects in the portfolio",
+export const metadata = {
+  title: "Projects | 3D Artist Portfolio",
+  description: "Browse all 3D art projects including characters, environments, and animations",
 }
 
-export default function ProjectsPage() {
-  const projects = getAllProjects()
-  const tags = getAllTags()
+export default async function ProjectsPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined }
+}) {
+  const projects = await getAllProjects()
+  const categories = await getAllCategories()
+  const tags = await getAllTags()
+
+  // Get filter parameters
+  const categoryFilter = searchParams.category as string | undefined
+  const tagFilter = searchParams.tag as string | undefined
+
+  // Filter projects based on search parameters
+  const filteredProjects = projects.filter((project) => {
+    // Filter by category if specified
+    if (categoryFilter && project.category !== categoryFilter) {
+      return false
+    }
+
+    // Filter by tag if specified
+    if (tagFilter && !project.tags.includes(tagFilter)) {
+      return false
+    }
+
+    return true
+  })
 
   return (
-    <main className="container mx-auto py-12 px-4 mt-10 md:mt-0">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="w-12 h-12 bg-black text-white flex items-center justify-center font-bold text-2xl">1</div>
-        <h1 className="text-3xl font-bold">ALL PROJECTS</h1>
-      </div>
+    <main className="flex-1 ml-[240px] py-12">
+      <div className="container mx-auto px-4">
+        <div className="bg-white border-4 border-black rounded-lg p-6 mb-8 shadow-lg">
+          <h1 className="text-4xl md:text-5xl font-black mb-4">Projects</h1>
+          <p className="text-gray-700">
+            Browse my complete collection of 3D art projects, including character designs, environments, product
+            visualizations, and animations.
+          </p>
+        </div>
 
-      <ProjectsGrid projects={projects} categories={categories} tags={tags} />
-
-      <Separator className="border-black my-12" />
-
-      <div className="border border-black p-6">
-        <div className="flex items-start gap-4">
-          <div className="w-8 h-8 border border-black flex items-center justify-center mt-1">
-            <span>i</span>
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Filters Sidebar */}
+          <div className="lg:col-span-1">
+            <ProjectFilters
+              categories={categories}
+              tags={tags}
+              selectedCategory={categoryFilter}
+              selectedTag={tagFilter}
+            />
           </div>
-          <div>
-            <h2 className="text-xl font-bold mb-2">Project Information</h2>
-            <p className="font-mono">
-              Browse all projects in the portfolio. Use the filters to narrow down by category or software. Click on a
-              project to view detailed information and process.
-            </p>
+
+          {/* Projects Grid */}
+          <div className="lg:col-span-3">
+            <ProjectGrid projects={filteredProjects} />
           </div>
         </div>
       </div>
