@@ -1,3 +1,8 @@
+// 确保这个页面是一个服务器组件
+// Ensure this page is a server component
+// 移除任何 'use client' 指令（如果有的话）
+// Remove any 'use client' directive (if present)
+
 /**
  * 个人作品集首页
  * 这个页面采用宜家说明书风格设计，使用简约的黑白线条图和图标来展示个人信息、技能和项目
@@ -9,7 +14,7 @@ import { ExperienceSection } from "@/components/experience-section"
 import { ContactSection } from "@/components/contact-section"
 import { CategorySection } from "@/components/category-section"
 import { Separator } from "@/components/ui/separator"
-import { getAllProjects, categories } from "@/lib/projects"
+import { getAllProjects, categories } from "@/lib/mdx"
 import { ArrowRight } from "lucide-react"
 import { HeroSection } from "@/components/hero-section"
 

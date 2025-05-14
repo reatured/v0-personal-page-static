@@ -7,10 +7,16 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Layers, Gamepad2, Headphones, Code, Menu, X } from "lucide-react"
-import { categories } from "@/lib/projects"
+import type { Category } from "@/lib/types"
 import { CuboidIcon } from "./icons"
 
-export function Sidebar() {
+// 接收 categories 作为 props 而不是直接导入
+// Receive categories as props instead of importing directly
+interface SidebarProps {
+  categories: Category[]
+}
+
+export function Sidebar({ categories }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   // 为每个类别定义图标
