@@ -1,15 +1,18 @@
 import type React from "react"
-import "@/app/globals.css"
+/**
+ * 网站布局组件
+ * 定义了网站的整体布局结构和全局样式
+ */
+import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import { ThemeProvider } from "@/components/theme-provider"
-import { PortfolioSidebar } from "@/components/portfolio-sidebar"
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
+import "./globals.css"
+import { Sidebar } from "@/components/sidebar"
 
 const inter = Inter({ subsets: ["latin"] })
 
-export const metadata = {
-  title: "Portfolio | John Doe",
-  description: "John Doe's personal portfolio website showcasing frontend development projects and skills",
+export const metadata: Metadata = {
+  title: "IKEA-Style Portfolio",
+  description: "A personal portfolio website designed like an IKEA instruction manual",
     generator: 'v0.dev'
 }
 
@@ -19,20 +22,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <SidebarProvider
-            style={
-              {
-                "--sidebar-width": "18rem",
-              } as React.CSSProperties
-            }
-          >
-            <PortfolioSidebar />
-            <SidebarInset className="bg-background">{children}</SidebarInset>
-          </SidebarProvider>
-        </ThemeProvider>
+        <div className="flex flex-col md:flex-row">
+          <Sidebar />
+          <div className="w-full md:ml-64">{children}</div>
+        </div>
       </body>
     </html>
   )
