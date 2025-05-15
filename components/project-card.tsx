@@ -1,64 +1,71 @@
 /**
- * Project Card Component
- * Card component for displaying project previews
+ * 项目卡片组件
+ * 以宜家说明书风格展示项目预览
  */
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowUpRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
+import type { Project } from "@/lib/types"
 
 interface ProjectCardProps {
-  title: string
-  subtitle: string
-  description: string
-  imageUrl: string
-  slug: string
-  category: string
-  index: number
+  project: Project
+  index?: number
+  total?: number
 }
 
-export default function ProjectCard({
-  title,
-  subtitle,
-  description,
-  imageUrl,
-  slug,
-  category,
-  index,
-}: ProjectCardProps) {
+export function ProjectCard({ project, index, total }: ProjectCardProps) {
   return (
-    <div className="group relative bg-white overflow-hidden rounded-lg border-4 border-black shadow-lg transform hover:-translate-y-1 transition-all">
-      <div className="p-6">
-        <div className="flex items-center mb-4">
-          <div className="w-8 h-8 bg-[#ffdd59] rounded-full flex items-center justify-center mr-3 border-2 border-black">
-            <span className="font-bold">{index}</span>
+    <div className="border border-black p-4">
+      <div className="mb-4">
+        <Image
+          src={project.image || "/placeholder.svg"}
+          alt={project.title}
+          width={400}
+          height={250}
+          className="w-full h-auto object-cover aspect-video"
+        />
+      </div>
+
+      <h3 className="text-xl font-bold mb-2">{project.title}</h3>
+      <p className="font-mono text-sm mb-4">{project.description}</p>
+
+      <div className="flex flex-wrap gap-2 mb-4">
+        {project.categories.map((category, i) => (
+          <span key={i} className="border border-black px-2 py-0.5 font-mono text-xs">
+            {category}
+          </span>
+        ))}
+      </div>
+
+      <div className="flex justify-between items-center">
+        {index !== undefined && total !== undefined ? (
+          <div className="flex items-center gap-1">
+            <div className="w-4 h-4 border border-black flex items-center justify-center">
+              <span className="text-xs">{index + 1}</span>
+            </div>
+            <p className="font-mono text-xs">/{total}</p>
           </div>
-          <h3 className="text-2xl font-black tracking-tight">{title}</h3>
-        </div>
+        ) : (
+          <div className="flex flex-wrap gap-1">
+            {project.tags.slice(0, 2).map((tag, i) => (
+              <span key={i} className="font-mono text-xs text-gray-600">
+                {tag}
+                {i < Math.min(project.tags.length, 2) - 1 ? ", " : ""}
+              </span>
+            ))}
+            {project.tags.length > 2 && (
+              <span className="font-mono text-xs text-gray-600">+{project.tags.length - 2}</span>
+            )}
+          </div>
+        )}
+
         <Link
-          href={`/categories/${category}`}
-          className="text-lg mb-4 bg-[#4cd137] text-white inline-block px-2 py-1 rounded transform -rotate-1 hover:rotate-0 transition-transform"
+          href={`/projects/${project.slug}`}
+          className="flex items-center gap-2 border border-black px-3 py-1 hover:bg-black hover:text-white transition-colors"
         >
-          {subtitle}
+          <span className="font-mono text-xs">View Details</span>
+          <ArrowRight className="w-3 h-3" />
         </Link>
-        <p className="text-gray-700 mb-6">{description}</p>
-        <Link href={`/projects/${slug}`} className="flex items-center text-sm font-bold hover:underline">
-          <span>View Details</span>
-          <ArrowUpRight className="ml-2 h-4 w-4" />
-        </Link>
-      </div>
-
-      <div className="absolute top-0 right-0 w-1/2 h-full transform translate-x-full group-hover:translate-x-0 transition-transform duration-500">
-        <div className="relative w-full h-full border-l-4 border-black">
-          <Image src={imageUrl || "/placeholder.svg"} alt={title} fill className="object-cover" />
-          <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 p-2">
-            <span className="text-white text-xs font-bold tracking-wider">VIEW PROJECT</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Decorative element */}
-      <div className="absolute top-2 right-2 bg-[#ff6b6b] text-white text-xs font-bold px-2 py-1 rounded-full transform rotate-12 border-2 border-black">
-        HOT!
       </div>
     </div>
   )

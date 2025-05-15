@@ -26,8 +26,8 @@ const config = {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#c9d765", // 黄绿色调
-          foreground: "#000000",
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -73,9 +73,41 @@ const config = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: "100%",
+            color: "inherit",
+            a: {
+              color: "inherit",
+              textDecoration: "underline",
+              fontWeight: "500",
+            },
+            h1: {
+              fontWeight: "700",
+              fontSize: "1.5em",
+            },
+            h2: {
+              fontWeight: "700",
+              fontSize: "1.25em",
+            },
+            h3: {
+              fontWeight: "600",
+              fontSize: "1.125em",
+            },
+            code: {
+              color: "inherit",
+              background: "#f3f4f6",
+              padding: "0.2em 0.4em",
+              borderRadius: "0.25em",
+              fontWeight: "400",
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config
 
 export default config

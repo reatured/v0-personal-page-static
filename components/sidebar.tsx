@@ -1,136 +1,106 @@
-/**
- * Sidebar Component
- * Main navigation sidebar with collapsible mobile menu
- */
 "use client"
 
+/**
+ * 侧边栏菜单组件
+ * 以宜家说明书风格展示不同的作品集类别
+ */
 import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
-import { usePathname } from "next/navigation"
-import { Home, User, Briefcase, Mail, Menu, X, Star, Palette, CuboidIcon as Cube, Video, Settings } from "lucide-react"
+import { Layers, Gamepad2, Headphones, Code, Menu, X } from "lucide-react"
+import type { Category } from "@/lib/types"
+import { CuboidIcon } from "./icons"
 
-export function Sidebar() {
+// 接收 categories 作为 props 而不是直接导入
+// Receive categories as props instead of importing directly
+interface SidebarProps {
+  categories: Category[]
+}
+
+export function Sidebar({ categories }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const pathname = usePathname()
 
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen)
-  }
-
-  const isActive = (href: string) => {
-    if (href === "#") {
-      return pathname === "/"
+  // 为每个类别定义图标
+  const getIconForCategory = (iconName: string) => {
+    switch (iconName) {
+      case "cube":
+        return <CuboidIcon className="w-5 h-5" />
+      case "layers":
+        return <Layers className="w-5 h-5" />
+      case "gamepad-2":
+        return <Gamepad2 className="w-5 h-5" />
+      case "headphones":
+        return <Headphones className="w-5 h-5" />
+      case "code":
+        return <Code className="w-5 h-5" />
+      default:
+        return <Code className="w-5 h-5" />
     }
-    if (href.startsWith("#")) {
-      return false
-    }
-    return pathname.startsWith(href)
   }
-
-  const navItems = [
-    { name: "Home", icon: Home, href: "/", badge: "" },
-    { name: "About Me", icon: User, href: "#about" },
-    { name: "Characters", icon: Cube, href: "/categories/character", badge: "" },
-    {
-      name: "Environments",
-      icon: Palette,
-      href: "/categories/environment",
-      badge: "",
-    },
-    { name: "Animations", icon: Video, href: "/categories/animation", badge: "" },
-    { name: "Featured", icon: Star, href: "#featured", badge: "" },
-    { name: "All Projects", icon: Briefcase, href: "/projects", badge: "NEW" },
-    { name: "Contact", icon: Mail, href: "#contact", badge: "" },
-    // 添加管理入口
-    { name: "管理项目", icon: Settings, href: "/admin/projects", badge: "ADMIN" },
-  ]
 
   return (
     <>
-      {/* Mobile menu button */}
+      {/* 移动端菜单按钮 */}
       <button
-        className="md:hidden fixed top-4 left-4 z-50 bg-[#ffdd59] p-2 rounded-full border-2 border-black shadow-md"
-        onClick={toggleSidebar}
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed top-4 left-4 z-50 md:hidden border border-black w-10 h-10 flex items-center justify-center bg-white"
+        aria-label={isOpen ? "Close menu" : "Open menu"}
       >
-        {isOpen ? <X size={24} /> : <Menu size={24} />}
+        {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
 
-      {/* Sidebar */}
+      {/* 侧边栏 */}
       <div
-        className={`fixed top-0 left-0 h-full w-[240px] bg-[#ffdd59] border-r-4 border-black z-40 transition-transform duration-300 transform ${
+        className={`fixed top-0 left-0 h-full bg-white border-r border-black w-64 z-40 transform transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         }`}
       >
-        <div className="flex flex-col h-full">
-          {/* Sidebar header */}
-          <div className="p-4 border-b-4 border-black">
-            <div className="relative w-full aspect-square mb-4 overflow-hidden rounded-lg border-4 border-black">
-              <Image src="/avatar.png" alt="3D Artist Avatar" fill className="object-cover" />
-              <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 p-2 text-white text-center">
-                <span className="font-bold text-sm">TECHNICAL ARTIST & DEVELOPER</span>
-              </div>
-            </div>
-            <h2 className="text-xl font-black text-center bg-black text-white py-1 px-2 rounded transform rotate-2 mb-2">
-              LINGYI ZHOU
-            </h2>
+        <div className="p-6">
+          <div className="border-b border-black pb-4 mb-6">
+            <h2 className="font-bold text-xl tracking-tighter">CATEGORIES</h2>
+            <p className="font-mono text-xs mt-1">Select your area of interest</p>
           </div>
 
-          {/* Navigation menu */}
-          <nav className="flex-1 overflow-auto p-2">
-            <ul className="space-y-2">
-              {navItems.map((item, index) => (
-                <li key={index}>
-                  <Link
-                    href={item.href}
-                    className={`flex items-center p-3 rounded-lg transition-colors group relative border-2 border-black ${
-                      isActive(item.href) ? "bg-black text-white" : "hover:bg-black hover:text-white"
-                    }`}
-                    onClick={() => {
-                      if (item.href.startsWith("#") || window.innerWidth < 768) {
-                        setIsOpen(false)
-                      }
-                    }}
-                  >
-                    <div
-                      className={`p-2 rounded-md border-2 border-black mr-3 ${
-                        isActive(item.href)
-                          ? "bg-[#ffdd59] text-black"
-                          : "bg-white group-hover:bg-[#ffdd59] group-hover:text-black"
-                      }`}
-                    >
-                      <item.icon size={18} />
-                    </div>
-                    <span className="font-bold">{item.name}</span>
+          <div className="space-y-6">
+            {categories.map((category, index) => (
+              <div key={index} className="group">
+                <Link
+                  href={`/categories/${category.slug}`}
+                  className="flex items-center gap-3 border border-black p-3 hover:bg-black hover:text-white transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <div className="w-8 h-8 border border-black group-hover:border-white flex items-center justify-center bg-white group-hover:bg-black">
+                    {getIconForCategory(category.icon)}
+                  </div>
+                  <span className="font-mono">{category.name}</span>
+                </Link>
 
-                    {item.badge && (
-                      <div className="absolute -top-2 -right-2 bg-[#ff6b6b] text-white text-xs font-bold px-2 py-1 rounded-full border-2 border-black">
-                        {item.badge}
-                      </div>
-                    )}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          {/* Sidebar footer */}
-          <div className="p-4 border-t-4 border-black">
-            <div className="bg-white p-3 rounded-lg border-2 border-black text-center">
-              <p className="text-sm font-bold">Let's create together!</p>
-              <div className="flex justify-center mt-2 space-x-2">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="w-6 h-6 rounded-full border-2 border-black"
-                    style={{ backgroundColor: i === 1 ? "#ff6b6b" : i === 2 ? "#4cd137" : "#1e90ff" }}
-                  ></div>
-                ))}
+                {/* 宜家风格的装饰元素 */}
+                <div className="flex justify-end mt-1">
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 border border-black"></div>
+                    <div className="w-2 h-2 border border-black bg-black"></div>
+                  </div>
+                </div>
               </div>
+            ))}
+          </div>
+
+          {/* 宜家风格的说明 */}
+          <div className="mt-8 border-t border-black pt-4">
+            <div className="flex items-start gap-2">
+              <div className="w-6 h-6 border border-black flex items-center justify-center mt-0.5 flex-shrink-0">
+                <span className="text-xs">i</span>
+              </div>
+              <p className="font-mono text-xs">Categories help organize your portfolio items by specialty area</p>
             </div>
           </div>
         </div>
       </div>
+
+      {/* 移动端背景遮罩 */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden" onClick={() => setIsOpen(false)}></div>
+      )}
     </>
   )
 }
