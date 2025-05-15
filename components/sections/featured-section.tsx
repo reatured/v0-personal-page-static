@@ -4,7 +4,32 @@
  */
 import { ProjectShowcase } from "@/components/project-showcase"
 import { SectionTitle } from "@/components/section-title"
-import type { Project } from "@/lib/projects"
+
+// 更新项目类型以匹配Supabase数据结构
+interface ProjectImage {
+  id: string
+  image_url: string
+  display_order: number
+}
+
+interface Project {
+  id: string
+  title: string
+  subtitle: string
+  slug: string
+  description: string
+  category: string
+  tags: string[]
+  thumbnail_url: string
+  featured: boolean
+  client: string | null
+  date: string | null
+  software: string[]
+  polygons: string | null
+  formats: string[]
+  images?: ProjectImage[]
+  content?: string | null
+}
 
 interface FeaturedSectionProps {
   projects: Project[]

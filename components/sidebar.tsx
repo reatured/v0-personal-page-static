@@ -8,7 +8,7 @@ import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { Home, User, Briefcase, Mail, Menu, X, Star, Palette, CuboidIcon as Cube, Video } from "lucide-react"
+import { Home, User, Briefcase, Mail, Menu, X, Star, Palette, CuboidIcon as Cube, Video, Settings } from "lucide-react"
 
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -32,11 +32,18 @@ export function Sidebar() {
     { name: "Home", icon: Home, href: "/", badge: "" },
     { name: "About Me", icon: User, href: "#about" },
     { name: "Characters", icon: Cube, href: "/categories/character", badge: "" },
-    { name: "Environments", icon: Palette, href: "/categories/environment", badge: "" },
+    {
+      name: "Environments",
+      icon: Palette,
+      href: "/categories/environment",
+      badge: "",
+    },
     { name: "Animations", icon: Video, href: "/categories/animation", badge: "" },
     { name: "Featured", icon: Star, href: "#featured", badge: "" },
     { name: "All Projects", icon: Briefcase, href: "/projects", badge: "NEW" },
     { name: "Contact", icon: Mail, href: "#contact", badge: "" },
+    // 添加管理入口
+    { name: "管理项目", icon: Settings, href: "/admin/projects", badge: "ADMIN" },
   ]
 
   return (
@@ -61,11 +68,11 @@ export function Sidebar() {
             <div className="relative w-full aspect-square mb-4 overflow-hidden rounded-lg border-4 border-black">
               <Image src="/avatar.png" alt="3D Artist Avatar" fill className="object-cover" />
               <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 p-2 text-white text-center">
-                <span className="font-bold text-sm">3D ARTIST</span>
+                <span className="font-bold text-sm">TECHNICAL ARTIST & DEVELOPER</span>
               </div>
             </div>
             <h2 className="text-xl font-black text-center bg-black text-white py-1 px-2 rounded transform rotate-2 mb-2">
-              YOUR NAME
+              LINGYI ZHOU
             </h2>
           </div>
 

@@ -10,21 +10,51 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import type { Project } from "@/lib/projects"
+
+// 更新项目类型以匹配Supabase数据结构
+interface ProjectImage {
+  id: string
+  image_url: string
+  display_order: number
+}
+
+interface Project {
+  id: string
+  title: string
+  subtitle: string
+  slug: string
+  description: string
+  category: string
+  tags: string[]
+  thumbnail_url: string
+  featured: boolean
+  client: string | null
+  date: string | null
+  software: string[]
+  polygons: string | null
+  formats: string[]
+  images?: ProjectImage[]
+  content?: string | null
+}
 
 interface ProjectShowcaseProps {
   project: Project
 }
 
 export function ProjectShowcase({ project }: ProjectShowcaseProps) {
+  // 获取项目图片并按display_order排序
+  const projectImages = project.images
+    ? [...project.images].sort((a, b) => a.display_order - b.display_order).map((img) => img.image_url)
+    : []
+
   const [activeImage, setActiveImage] = useState(0)
 
   const nextImage = () => {
-    setActiveImage((prev) => (prev + 1) % project.images.length)
+    setActiveImage((prev) => (prev + 1) % projectImages.length)
   }
 
   const prevImage = () => {
-    setActiveImage((prev) => (prev - 1 + project.images.length) % project.images.length)
+    setActiveImage((prev) => (prev - 1 + projectImages.length) % projectImages.length)
   }
 
   return (
@@ -49,36 +79,47 @@ export function ProjectShowcase({ project }: ProjectShowcaseProps) {
 
         <TabsContent value="gallery" className="mt-0">
           <div className="relative aspect-[16/9] bg-[#f5f3e4]">
-            <Image
-              src={project.images[activeImage] || "/placeholder.svg"}
-              alt={project.title}
-              fill
-              className="object-contain"
-            />
+            {projectImages.length > 0 ? (
+              <Image
+                src={projectImages[activeImage] || "/placeholder.svg"}
+                alt={project.title}
+                fill
+                className="object-contain"
+              />
+            ) : (
+              <Image
+                src={project.thumbnail_url || "/placeholder.svg"}
+                alt={project.title}
+                fill
+                className="object-contain"
+              />
+            )}
 
             {/* Decorative element */}
             <div className="absolute top-4 left-4 bg-white p-2 rounded-lg transform -rotate-6 border-2 border-black shadow-lg">
               <span className="text-sm font-bold">{project.category.toUpperCase()}</span>
             </div>
 
-            <div className="absolute bottom-4 right-4 flex space-x-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={prevImage}
-                className="rounded-full bg-white border-2 border-black"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={nextImage}
-                className="rounded-full bg-white border-2 border-black"
-              >
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </div>
+            {projectImages.length > 1 && (
+              <div className="absolute bottom-4 right-4 flex space-x-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={prevImage}
+                  className="rounded-full bg-white border-2 border-black"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={nextImage}
+                  className="rounded-full bg-white border-2 border-black"
+                >
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
           </div>
 
           <div className="p-6">
@@ -90,20 +131,22 @@ export function ProjectShowcase({ project }: ProjectShowcaseProps) {
             </div>
             <p className="text-gray-700 mb-4">{project.description}</p>
 
-            <div className="mt-6 flex space-x-2">
-              {project.images.map((_, index) => (
-                <button
-                  key={index}
-                  className={`w-8 h-8 rounded-full border-2 border-black flex items-center justify-center ${
-                    index === activeImage ? "bg-[#ffdd59]" : "bg-white"
-                  }`}
-                  onClick={() => setActiveImage(index)}
-                  aria-label={`View image ${index + 1}`}
-                >
-                  {index + 1}
-                </button>
-              ))}
-            </div>
+            {projectImages.length > 1 && (
+              <div className="mt-6 flex space-x-2">
+                {projectImages.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`w-8 h-8 rounded-full border-2 border-black flex items-center justify-center ${
+                      index === activeImage ? "bg-[#ffdd59]" : "bg-white"
+                    }`}
+                    onClick={() => setActiveImage(index)}
+                    aria-label={`View image ${index + 1}`}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </TabsContent>
 

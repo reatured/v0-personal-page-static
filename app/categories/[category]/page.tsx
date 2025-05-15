@@ -6,7 +6,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowLeft } from "lucide-react"
 import { ProjectGrid } from "@/components/project-grid"
-import { getAllProjects, getAllCategories } from "@/lib/projects"
+import { getAllCategories, getProjectsByCategory } from "@/lib/supabase"
 
 export async function generateStaticParams() {
   const categories = await getAllCategories()
@@ -38,8 +38,7 @@ export default async function CategoryPage({ params }: { params: { category: str
     notFound()
   }
 
-  const projects = await getAllProjects()
-  const filteredProjects = projects.filter((project) => project.category === params.category)
+  const projects = await getProjectsByCategory(params.category)
 
   return (
     <main className="flex-1 ml-[240px] py-12">
@@ -64,7 +63,7 @@ export default async function CategoryPage({ params }: { params: { category: str
           </p>
         </div>
 
-        <ProjectGrid projects={filteredProjects} />
+        <ProjectGrid projects={projects} />
       </div>
     </main>
   )

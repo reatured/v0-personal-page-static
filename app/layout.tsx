@@ -12,8 +12,8 @@ import { Footer } from "@/components/footer"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "3D Artist Portfolio",
-  description: "Portfolio website showcasing 3D art, models, and animations",
+  title: "Lingyi Zhou | Technical Artist & Developer",
+  description: "Portfolio website showcasing technical art, 3D models, and full stack development projects",
     generator: 'v0.dev'
 }
 

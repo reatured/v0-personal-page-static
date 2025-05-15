@@ -34,7 +34,7 @@ export interface Project {
 }
 
 // Fallback mock projects data - used only if MDX files are not available
-const fallbackProjects: Project[] = [
+export const fallbackProjects: Project[] = [
   {
     id: "1",
     slug: "cyberpunk-character",

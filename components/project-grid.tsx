@@ -3,7 +3,19 @@
  * Grid layout for displaying multiple projects
  */
 import ProjectCard from "@/components/project-card"
-import type { Project } from "@/lib/projects"
+
+// 更新项目类型以匹配Supabase数据结构
+interface Project {
+  id: string
+  title: string
+  subtitle: string
+  slug: string
+  description: string
+  category: string
+  tags: string[]
+  thumbnail_url: string
+  featured: boolean
+}
 
 interface ProjectGridProps {
   projects: Project[]
@@ -30,7 +42,7 @@ export function ProjectGrid({ projects }: ProjectGridProps) {
           title={project.title}
           subtitle={project.subtitle}
           description={project.description}
-          imageUrl={project.thumbnail}
+          imageUrl={project.thumbnail_url}
           slug={project.slug}
           category={project.category}
           index={index + 1}

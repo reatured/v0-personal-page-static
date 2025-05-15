@@ -7,7 +7,19 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
 import { SectionTitle } from "@/components/section-title"
 import ProjectCard from "@/components/project-card"
-import type { Project } from "@/lib/projects"
+
+// 更新项目类型以匹配Supabase数据结构
+interface Project {
+  id: string
+  title: string
+  subtitle: string
+  slug: string
+  description: string
+  category: string
+  tags: string[]
+  thumbnail_url: string
+  featured: boolean
+}
 
 interface ProjectsSectionProps {
   projects: Project[]
@@ -37,7 +49,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
               title={project.title}
               subtitle={project.subtitle}
               description={project.description}
-              imageUrl={project.thumbnail}
+              imageUrl={project.thumbnail_url}
               slug={project.slug}
               category={project.category}
               index={index + 1}

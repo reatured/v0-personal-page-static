@@ -7,11 +7,12 @@ import { HeroSection } from "@/components/sections/hero-section"
 import { FeaturedSection } from "@/components/sections/featured-section"
 import { ProjectsSection } from "@/components/sections/projects-section"
 import { ContactSection } from "@/components/sections/contact-section"
-import { getAllProjects } from "@/lib/projects"
+import { getAllProjects, getFeaturedProjects } from "@/lib/supabase"
 
 export default async function Home() {
+  // 从Supabase获取所有项目和特色项目
   const projects = await getAllProjects()
-  const featuredProjects = projects.filter((project) => project.featured)
+  const featuredProjects = await getFeaturedProjects()
 
   return (
     <div className="flex min-h-screen bg-[#f5f3e4]">

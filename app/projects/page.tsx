@@ -4,7 +4,7 @@
  */
 import { ProjectGrid } from "@/components/project-grid"
 import { ProjectFilters } from "@/components/project-filters"
-import { getAllProjects, getAllCategories, getAllTags } from "@/lib/projects"
+import { getAllProjects, getAllCategories, getAllTags } from "@/lib/supabase"
 
 export const metadata = {
   title: "Projects | 3D Artist Portfolio",
@@ -16,6 +16,7 @@ export default async function ProjectsPage({
 }: {
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
+  // 从Supabase获取项目数据
   const projects = await getAllProjects()
   const categories = await getAllCategories()
   const tags = await getAllTags()

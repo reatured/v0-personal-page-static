@@ -41,10 +41,10 @@ export function HeroSection() {
             {/* Left text */}
             <div className="relative">
               <div className="bg-white p-6 rounded-lg border-2 border-black shadow-lg transform rotate-1">
-                <h2 className="text-2xl font-bold mb-4">3D Artist Portfolio</h2>
+                <h2 className="text-2xl font-bold mb-4">Technical Artist & Full Stack Developer</h2>
                 <p className="mb-6 text-gray-700">
-                  Welcome to my world of 3D creation! I specialize in creating high-quality 3D models, character
-                  designs, and environmental art.
+                  Welcome to my portfolio! I specialize in bridging the gap between art and technology, creating
+                  technical art solutions and full stack applications with a focus on visual excellence.
                 </p>
                 <div className="flex gap-4">
                   <Button
